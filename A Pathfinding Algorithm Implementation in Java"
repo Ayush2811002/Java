@@ -1,0 +1,91 @@
+import java.util.*;
+
+class Node {
+    int x, y;  // Coordinates of the node
+    int g;     // Cost from the start node
+    int h;     // Heuristic (estimated cost to the goal)
+    int f;     // f = g + h
+
+    Node parent;
+
+    Node(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+
+public class AStarAlgorithm {
+    private int[][] grid;
+    private Node startNode, goalNode;
+
+    public AStarAlgorithm(int[][] grid, Node start, Node goal) {
+        this.grid = grid;
+        this.startNode = start;
+        this.goalNode = goal;
+    }
+
+    public List<Node> findPath() {
+        PriorityQueue<Node> openSet = new PriorityQueue<>(Comparator.comparingInt(n -> n.f));
+        Set<Node> closedSet = new HashSet<>();
+
+        openSet.add(startNode);
+
+        while (!openSet.isEmpty()) {
+            Node current = openSet.poll();
+
+            if (current.equals(goalNode)) {
+                return reconstructPath(current);
+            }
+
+            closedSet.add(current);
+
+            for (Node neighbor : getNeighbors(current)) {
+                if (closedSet.contains(neighbor)) {
+                    continue;
+                }
+
+                int tentativeG = current.g + 1; // Assuming constant cost
+
+                if (!openSet.contains(neighbor) || tentativeG < neighbor.g) {
+                    neighbor.parent = current;
+                    neighbor.g = tentativeG;
+                    neighbor.h = heuristic(neighbor, goalNode);
+                    neighbor.f = neighbor.g + neighbor.h;
+
+                    if (!openSet.contains(neighbor)) {
+                        openSet.add(neighbor);
+                    }
+                }
+            }
+        }
+
+        return null; // No path found
+    }
+
+    private List<Node> reconstructPath(Node current) {
+        List<Node> path = new ArrayList<>();
+        while (current != null) {
+            path.add(current);
+            current = current.parent;
+        }
+        Collections.reverse(path);
+        return path;
+    }
+
+    private int heuristic(Node a, Node b) {
+        // Use the Manhattan distance as a heuristic for simplicity
+        return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+    }
+
+    private List<Node> getNeighbors(Node node) {
+        List<Node> neighbors = new ArrayList<>();
+        // Implement logic to find neighbors based on grid
+        // (e.g., check for valid adjacent grid cells)
+        return neighbors;
+    }
+
+    public static void main(String[] args) {
+        // Initialize a grid and create start and goal nodes
+        // Call the A* algorithm to find the path
+    }
+}
